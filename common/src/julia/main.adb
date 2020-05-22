@@ -9,6 +9,8 @@ with HAL.Bitmap; use HAL.Bitmap;
 with HAL.Framebuffer; use HAL.Framebuffer;
 with STM32.RNG.Polling; use STM32.RNG.Polling;
 
+with Generic_Queue;
+
 procedure Main is
 
    package Complex_Types is
@@ -19,6 +21,17 @@ procedure Main is
      new Ada.Numerics.Generic_Complex_Elementary_Functions (Complex_Types);
    use Complex_Functions;
 
+   type Element is
+      record
+         Z : Complex_Types.Complex;
+         Label : Natural;
+         Deriv : Float;
+      end record;
+
+   package Stack is new Generic_Queue(Element);
+
+   Root : Stack.Pointer;
+
    Format : constant HAL.Framebuffer.FB_Color_Mode := RGB_565;
    White_Color : constant UInt32 := 16#FFFF#;
    Blue_Color : constant UInt32 := 16#001F#;
@@ -28,9 +41,6 @@ procedure Main is
                         then LCD_Natural_Width else LCD_Natural_Height);
    LCD_H : constant := (if LCD_Natural_Width > LCD_Natural_Height
                         then LCD_Natural_Height else LCD_Natural_Width);
-
-   procedure Clear;
-   procedure Step;
 
    procedure Clear is
    begin
@@ -44,34 +54,42 @@ procedure Main is
    C : Complex_Types.Complex := (Re => -0.512511498387847167,
                                  Im =>  0.521295573094847167);
 
-   Current : Complex_Types.Complex := (Re => 0.0, Im => 0.0);
+   Dbound : constant Float := 100.0;
 
-   procedure Step is
-      X : Integer := Integer (Float (LCD_W) * (Current.Re + 1.5) / 3.0);
-      Y : Integer := Integer (Float (LCD_H) * (1.0 - Current.Im) / 2.0);
-   begin
-      if X >= 0 and then X < LCD_W and then Y >= 0 and then Y < LCD_H then
-         Display.Hidden_Buffer (1).Set_Pixel ((X, Y), Black_Color);
-         Display.Update_Layer (1, Copy_Back => True);
-      end if;
+   Maxdepth : Natural := 50;
 
-      Current := Sqrt (Current - C);
-      if Random mod 2 = 0 then
-         Current := - Current;
-      end if;
-
-      if Random mod 1_000 = 0 then
-         Current := (0.0, 0.0);
-      end if;
-   end Step;
 
 begin
    Initialize_RNG;
    Display.Initialize (Orientation => Landscape);
    Display.Initialize_Layer (1, Format);
    Clear;
+
+   Stack.Enqueue (Root, ((0.0, 0.0), 0, 1.0));
+
+   while not Stack.Is_Empty (Root) loop
+      declare
+         Current : Element := Stack.Dequeue (Root);
+         X : Integer := Integer (Float (LCD_W) * (Current.Z.Re + 1.5) / 3.0);
+         Y : Integer := Integer (Float (LCD_H) * (1.0 - Current.Z.Im) / 2.0);
+      begin
+         if X >= 0 and then X < LCD_W and then Y >= 0 and then Y < LCD_H then
+            Display.Hidden_Buffer (1).Set_Pixel ((X, Y), Black_Color);
+            Display.Update_Layer (1, Copy_Back => True);
+         end if;
+         if Current.Label < Maxdepth and then Current.Deriv < Dbound then
+            Current.Z := Sqrt (Current.Z - C);
+            Current.Label := Current.Label + 1;
+            Current.Deriv := 2.0 * Current.Deriv*abs(Current.Z);
+            Stack.Enqueue (Root, Current);
+            Current.Z := - Current.Z;
+            Stack.Enqueue (Root, Current);
+         end if;
+      end;
+   end loop;
+
    loop
-      Step;
+      null;
    end loop;
 end Main;
 
