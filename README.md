@@ -14,4 +14,14 @@ git clone --recursive https://github.com/AdaCore/Ada_Drivers_Library.git
 
 ```bash
 cd ada-arm
+cd Ada_Drivers_Library
+git pull
+```
+
+## Przygotowanie narzędzi do komunikacji z urządzeniami
+
+### Linux/Debian/Ubuntu
+
+```bash
+sudo apt install stlink-tools
 ```
