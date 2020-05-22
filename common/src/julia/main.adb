@@ -9,6 +9,8 @@ with HAL.Bitmap; use HAL.Bitmap;
 with HAL.Framebuffer; use HAL.Framebuffer;
 with STM32.RNG.Polling; use STM32.RNG.Polling;
 
+with LCD_Std_Out;
+
 with Generic_Queue;
 
 procedure Main is
@@ -58,6 +60,8 @@ procedure Main is
 
    Maxdepth : Natural := 50;
 
+   Counter : Natural := 0;
+
 
 begin
    Initialize_RNG;
@@ -67,6 +71,8 @@ begin
 
    Stack.Enqueue (Root, ((0.0, 0.0), 0, 1.0));
 
+   LCD_Std_Out.Current_Background_Color := Blue;
+
    while not Stack.Is_Empty (Root) loop
       declare
          Current : Element := Stack.Dequeue (Root);
@@ -74,6 +80,9 @@ begin
          Y : Integer := Integer (Float (LCD_H) * (1.0 - Current.Z.Im) / 2.0);
       begin
          if X >= 0 and then X < LCD_W and then Y >= 0 and then Y < LCD_H then
+            Counter := Counter + 1;
+            LCD_Std_Out.Put (X => 0, Y => 0, Msg => Counter'Image);
+--            LCD_Std_Out.Put_Line (Counter'Image);
             Display.Hidden_Buffer (1).Set_Pixel ((X, Y), Black_Color);
             Display.Update_Layer (1, Copy_Back => True);
          end if;
