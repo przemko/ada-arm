@@ -72,7 +72,6 @@ begin
    Stack.Push (Top, ((0.0, 0.0), 0, 1.0));
 
    LCD_Std_Out.Current_Background_Color := Blue;
-
    while not Stack.Is_Empty (Top) loop
       declare
          Current : Element := Stack.Pop (Top);
@@ -81,7 +80,9 @@ begin
       begin
          if X >= 0 and then X < LCD_W and then Y >= 0 and then Y < LCD_H then
             Counter := Counter + 1;
-            LCD_Std_Out.Put (X => 0, Y => 8, Msg => Counter'Image);
+            if Counter mod 1000 = 0 then
+               LCD_Std_Out.Put (X => 0, Y => LCD_H - 24, Msg => Counter'Image);
+            end if;
             Display.Hidden_Buffer (1).Set_Pixel ((X, Y), Black_Color);
             Display.Update_Layer (1, Copy_Back => True);
          end if;
@@ -95,6 +96,8 @@ begin
          end if;
       end;
    end loop;
+
+   LCD_Std_Out.Put (X => 0, Y => LCD_H - 24, Msg => Counter'Image);
 
    loop
       null;
