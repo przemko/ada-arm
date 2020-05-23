@@ -11,7 +11,7 @@ with STM32.RNG.Polling; use STM32.RNG.Polling;
 
 with LCD_Std_Out;
 
-with Generic_Queue;
+with Generic_Stack;
 
 procedure Main is
 
@@ -30,9 +30,9 @@ procedure Main is
          Deriv : Float;
       end record;
 
-   package Stack is new Generic_Queue(Element);
+   package Stack is new Generic_Stack(Element);
 
-   Root : Stack.Pointer;
+   Top : Stack.Pointer;
 
    Format : constant HAL.Framebuffer.FB_Color_Mode := RGB_565;
    White_Color : constant UInt32 := 16#FFFF#;
@@ -58,7 +58,7 @@ procedure Main is
 
    Dbound : constant Float := 100.0;
 
-   Maxdepth : Natural := 50;
+   Maxdepth : Natural := 100;
 
    Counter : Natural := 0;
 
@@ -69,20 +69,19 @@ begin
    Display.Initialize_Layer (1, Format);
    Clear;
 
-   Stack.Enqueue (Root, ((0.0, 0.0), 0, 1.0));
+   Stack.Push (Top, ((0.0, 0.0), 0, 1.0));
 
    LCD_Std_Out.Current_Background_Color := Blue;
 
-   while not Stack.Is_Empty (Root) loop
+   while not Stack.Is_Empty (Top) loop
       declare
-         Current : Element := Stack.Dequeue (Root);
+         Current : Element := Stack.Pop (Top);
          X : Integer := Integer (Float (LCD_W) * (Current.Z.Re + 1.5) / 3.0);
          Y : Integer := Integer (Float (LCD_H) * (1.0 - Current.Z.Im) / 2.0);
       begin
          if X >= 0 and then X < LCD_W and then Y >= 0 and then Y < LCD_H then
             Counter := Counter + 1;
-            LCD_Std_Out.Put (X => 0, Y => 0, Msg => Counter'Image);
---            LCD_Std_Out.Put_Line (Counter'Image);
+            LCD_Std_Out.Put (X => 0, Y => 8, Msg => Counter'Image);
             Display.Hidden_Buffer (1).Set_Pixel ((X, Y), Black_Color);
             Display.Update_Layer (1, Copy_Back => True);
          end if;
@@ -90,9 +89,9 @@ begin
             Current.Z := Sqrt (Current.Z - C);
             Current.Label := Current.Label + 1;
             Current.Deriv := 2.0 * Current.Deriv*abs(Current.Z);
-            Stack.Enqueue (Root, Current);
+            Stack.Push (Top, Current);
             Current.Z := - Current.Z;
-            Stack.Enqueue (Root, Current);
+            Stack.Push (Top, Current);
          end if;
       end;
    end loop;
