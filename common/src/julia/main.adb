@@ -56,7 +56,7 @@ procedure Main is
    C : Complex_Types.Complex := (Re => -0.512511498387847167,
                                  Im =>  0.521295573094847167);
 
-   Dbound : constant Float := 100.0;
+   Dbound : constant Float := 300.0;
 
    Maxdepth : Natural := 100;
 
