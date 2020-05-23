@@ -1,6 +1,5 @@
 with Ada.Numerics.Generic_Complex_Types;
 with Ada.Numerics.Generic_Complex_Elementary_Functions;
-
 with Last_Chance_Handler; pragma Unreferenced (Last_Chance_Handler);
 with Interfaces; use Interfaces;
 with HAL; use HAL;
@@ -61,7 +60,6 @@ procedure Main is
    Maxdepth : Natural := 100;
 
    Counter : Natural := 0;
-
 
 begin
    Initialize_RNG;
