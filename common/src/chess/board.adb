@@ -44,6 +44,26 @@ package body Board is
       16#1fffe000#, 16#1ffff000#, 16#1ffff000#, 16#1ffff000#,
       16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#);
 
+   Bishop_Bitmap : Piece_Bitmap :=
+     (16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#,
+      16#00000000#, 16#00018000#, 16#0003c000#, 16#0007e000#,
+      16#0007e000#, 16#0003c000#, 16#000ff000#, 16#001ff800#,
+      16#003ffc00#, 16#007e7e00#, 16#00fc3f00#, 16#01fc3f80#,
+      16#01fe7f80#, 16#01ffff80#, 16#00ffff00#, 16#007ffe00#,
+      16#003ffc00#, 16#003ffc00#, 16#007ffe00#, 16#00d5ab00#,
+      16#007ffe00#, 16#003ffc00#, 16#0ffffff0#, 16#1ffc3ff8#,
+      16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#);
+
+   Queen_Bitmap : Piece_Bitmap :=
+     (16#00000000#, 16#00000000#, 16#00000000#, 16#00018000#,
+      16#0063c600#, 16#00f3cf00#, 16#0cf18f30#, 16#1e618678#,
+      16#1e63c678#, 16#0c63c630#, 16#0cf3cf30#, 16#0cf7ef30#,
+      16#1ef7ef78#, 16#1ef7ef78#, 16#1ef7ef78#, 16#1ffffff8#,
+      16#0ffffff0#, 16#0ffffff0#, 16#07f81fe0#, 16#07c3c3e0#,
+      16#021ff840#, 16#03ffffc0#, 16#030000c0#, 16#07ffffe0#,
+      16#0e1ff870#, 16#1fc3c3f8#, 16#1ff81ff8#, 16#07ffffe0#,
+      16#007ffe00#, 16#00000000#, 16#00000000#, 16#00000000#);
+
    procedure Clear (Column : Column_Type; Row : Row_Type) is
    begin
       Display.Hidden_Buffer (1).Set_Source
@@ -116,9 +136,29 @@ package body Board is
                   end if;
                end loop;
             end loop;
+
+         when Bishop =>
+            for I in 0..31 loop
+               for J in 0..31 loop
+                  if (Bishop_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I, Y+J), PixCol);
+                  end if;
+               end loop;
+            end loop;
+
+         when Queen =>
+            for I in 0..31 loop
+               for J in 0..31 loop
+                  if (Queen_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I, Y+J), PixCol);
+                  end if;
+               end loop;
+            end loop;
+
          when others =>
             null;
       end case;
+
       Display.Update_Layer (1, Copy_Back => True);
 
 end Draw_Piece;
