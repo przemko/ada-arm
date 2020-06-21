@@ -44,18 +44,6 @@ package body Board is
       16#1fffe000#, 16#1ffff000#, 16#1ffff000#, 16#1ffff000#,
       16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#);
 
-   Format : constant HAL.Framebuffer.FB_Color_Mode := RGB_565;
-   White_Color : constant UInt32 := 16#FFFF#;
-   Grey_75 : constant UInt32 := 16#CCCC#;
-   Grey_50 : constant UInt32 := 16#8888#;
-   Blue_Color : constant UInt32 := 16#001F#;
-   Black_Color : constant UInt32 := 16#0000#;
-
-   LCD_W : constant := (if LCD_Natural_Width > LCD_Natural_Height
-                        then LCD_Natural_Width else LCD_Natural_Height);
-   LCD_H : constant := (if LCD_Natural_Width > LCD_Natural_Height
-                        then LCD_Natural_Height else LCD_Natural_Width);
-
    procedure Clear (Column : Column_Type; Row : Row_Type) is
    begin
       Display.Hidden_Buffer (1).Set_Source
@@ -88,7 +76,7 @@ package body Board is
    begin
       Initialize_RNG;
       Display.Initialize (Orientation => Landscape);
-      Display.Initialize_Layer (1, Format);
+      Display.Initialize_Layer (1, RGB_565);
       Digits_And_Letters;
       Clear;
    end Init;
