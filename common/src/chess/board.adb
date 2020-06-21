@@ -34,6 +34,15 @@ package body Board is
       16#00000000#, 16#03ffffc0#, 16#03ffffc0#, 16#01ffff80#,
       16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#);
 
+   Knight_Bitmap : Piece_Bitmap :=
+     (16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#,
+      16#00000000#, 16#00042000#, 16#000c6000#, 16#001ee000#,
+      16#007fe000#, 16#00ffe000#, 16#01fff000#, 16#03ff3800#,
+      16#03ff1c00#, 16#07ff9e00#, 16#07ffff00#, 16#0fffff80#,
+      16#0fffffc0#, 16#0fffffc0#, 16#0ffffcc0#, 16#1ffe7cc0#,
+      16#1ffe3f80#, 16#1fff1f80#, 16#1fff8f00#, 16#1fffc000#,
+      16#1fffe000#, 16#1ffff000#, 16#1ffff000#, 16#1ffff000#,
+      16#00000000#, 16#00000000#, 16#00000000#, 16#00000000#);
 
    Format : constant HAL.Framebuffer.FB_Color_Mode := RGB_565;
    White_Color : constant UInt32 := 16#FFFF#;
@@ -111,6 +120,14 @@ package body Board is
                end loop;
             end loop;
 
+         when Knight =>
+            for I in 0..31 loop
+               for J in 0..31 loop
+                  if (Knight_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I, Y+J), PixCol);
+                  end if;
+               end loop;
+            end loop;
          when others =>
             null;
       end case;
