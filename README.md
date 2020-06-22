@@ -32,3 +32,18 @@ git pull
 ```bash
 sudo apt install stlink-tools
 ```
+
+## Praca na terminalu
+
+### Kompilacja
+
+```bash
+gprbuild
+```
+
+### Wgranie programu na płytkę montażową
+
+```bash
+st-flash write obj/main.bin 0x8000000
+```
+
