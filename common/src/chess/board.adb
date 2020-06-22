@@ -115,12 +115,20 @@ package body Board is
 
       X : Integer := 32*Integer(Column);
       Y : Integer := 256 - 32*Integer(Row);
-      PixCol : Bitmap_Color := (if Color = White then HAL.Bitmap.White else HAL.Bitmap.Black);
+      PixCol : Bitmap_Color := (if Color = White then HAL.Bitmap.White else HAL.Bitmap.Dark_Grey);
 
    begin
       Clear (Column, Row);
       case Piece is
       when Pawn =>
+         for I in 0..30 loop
+            for J in 0..30 loop
+               if (Pawn_Bitmap(J) and 2**I) /= 0 then
+                  Display.Hidden_Buffer (1).Set_Pixel ((X+I+1, Y+J+1), HAL.Bitmap.Black);
+               end if;
+            end loop;
+         end loop;
+
          for I in 0..31 loop
             for J in 0..31 loop
                if (Pawn_Bitmap(J) and 2**I) /= 0 then
@@ -130,6 +138,14 @@ package body Board is
          end loop;
 
          when Rook =>
+            for I in 0..30 loop
+               for J in 0..30 loop
+                  if (Rook_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I+1, Y+J+1), HAL.Bitmap.Black);
+                  end if;
+               end loop;
+            end loop;
+
             for I in 0..31 loop
                for J in 0..31 loop
                   if (Rook_Bitmap(J) and 2**I) /= 0 then
@@ -139,6 +155,14 @@ package body Board is
             end loop;
 
          when Knight =>
+            for I in 0..30 loop
+               for J in 0..30 loop
+                  if (Knight_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I+1, Y+J+1), HAL.Bitmap.Black);
+                  end if;
+               end loop;
+            end loop;
+
             for I in 0..31 loop
                for J in 0..31 loop
                   if (Knight_Bitmap(J) and 2**I) /= 0 then
@@ -148,6 +172,14 @@ package body Board is
             end loop;
 
          when Bishop =>
+            for I in 0..30 loop
+               for J in 0..30 loop
+                  if (Bishop_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I+1, Y+J+1), HAL.Bitmap.Black);
+                  end if;
+               end loop;
+            end loop;
+
             for I in 0..31 loop
                for J in 0..31 loop
                   if (Bishop_Bitmap(J) and 2**I) /= 0 then
@@ -157,6 +189,14 @@ package body Board is
             end loop;
 
          when Queen =>
+            for I in 0..30 loop
+               for J in 0..30 loop
+                  if (Queen_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I+1, Y+J+1), HAL.Bitmap.Black);
+                  end if;
+               end loop;
+            end loop;
+
             for I in 0..31 loop
                for J in 0..31 loop
                   if (Queen_Bitmap(J) and 2**I) /= 0 then
@@ -166,6 +206,14 @@ package body Board is
             end loop;
 
          when King =>
+            for I in 0..30 loop
+               for J in 0..30 loop
+                  if (King_Bitmap(J) and 2**I) /= 0 then
+                     Display.Hidden_Buffer (1).Set_Pixel ((X+I+1, Y+J+1), HAL.Bitmap.Black);
+                  end if;
+               end loop;
+            end loop;
+
             for I in 0..31 loop
                for J in 0..31 loop
                   if (King_Bitmap(J) and 2**I) /= 0 then
