@@ -3,20 +3,25 @@ package body Engine is
    procedure Init (Board : out Board_Type) is
    begin
       Board :=
-        (1    => (White_Rook, White_Knight, White_Bishop, White_Queen, White_King, White_Bishop, White_Knight, White_Rook),
-         2    => (others => White_Pawn),
-         3..6 => (others => Empty),
-         7    => (others => Black_Pawn),
-         8    => (Black_Rook, Black_Knight, Black_Bishop, Black_Queen, Black_King, Black_Bishop, Black_Knight, Black_Rook));
+        (1    => ((White, Rook), (White, Knight), (White, Bishop), (White, Queen),
+                  (White, King), (White, Bishop), (White, Knight), (White, Rook)),
+         2    => (others => (White, Pawn)),
+         3..6 => (others => (None, Empty)),
+         7    => (others => (Black, Pawn)),
+         8    => ((Black, Rook), (Black, Knight), (Black, Bishop), (Black, Queen),
+                  (Black, King), (Black, Bishop), (Black, Knight), (Black, Rook)));
    end Init;
 
    function Is_Empty (Board : Board_Type; Column : Column_Type; Row : Row_Type) return Boolean
-   is (Board (Column, Row) = Empty)
+   is (Board (Column, Row).PC = Empty)
      with Inline;
 
    function Whose_Piece (Board : Board_Type; Column : Column_Type; Row : Row_Type) return Player_Type
-   is (Player_White)
+   is (if Board(Column, Row).CL = White then Player_White else Player_Black)
      with Inline, Pre => not Is_Empty (Board, Column, Row);
+
+   function Which_Piece (Board : Board_Type; Column : Column_Type; Row : Row_Type) return Piece_Type
+   is (Board(Column, Row).PC);
 
    procedure Best_Move (Board : in Board_Type;
                         Player : in Player_Type;

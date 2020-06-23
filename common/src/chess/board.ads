@@ -18,4 +18,6 @@ package Board is
 
    procedure Draw_Piece (Column : Column_Type; Row : Row_Type; Color : Color_Type; Piece : Piece_Type);
 
+   procedure Get_Position (Column : out Column_Type; Row : out Row_Type);
+
 end Board;

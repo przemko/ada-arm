@@ -8,9 +8,14 @@ package Engine is
 
    type Row_Type is new Index_Type;
 
-   type Field_Type is (Empty,
-                       White_Pawn, White_Rook, White_Knight, White_Bishop, White_Queen, White_King,
-                       Black_Pawn, Black_Rook, Black_Knight, Black_Bishop, Black_Queen, Black_King);
+   type Piece_Type is (Empty, Pawn, Rook, Knight, Bishop, Queen, King);
+
+   type Color_Type is (None, White, Black);
+
+   type Field_Type is record
+      CL : Color_Type;
+      PC : Piece_Type;
+   end record;
 
    type Board_Type is array (Column_Type, Row_Type) of Field_Type;
 

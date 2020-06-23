@@ -5,6 +5,7 @@ with HAL; use HAL;
 with STM32.Board; use STM32.Board;
 with HAL.Bitmap; use HAL.Bitmap;
 with HAL.Framebuffer; use HAL.Framebuffer;
+--with HAL.Touch_Panel; use HAL.Touch_Panel;
 with STM32.RNG.Polling; use STM32.RNG.Polling;
 with BMP_Fonts; use BMP_Fonts;
 
@@ -105,6 +106,7 @@ package body Board is
    procedure Init is
    begin
       Initialize_RNG;
+      --Touch_Panel.Initialize;
       Display.Initialize (Orientation => Landscape);
       Display.Initialize_Layer (1, RGB_565);
       Digits_And_Letters;
@@ -242,6 +244,30 @@ package body Board is
 
       Display.Update_Layer (1, Copy_Back => True);
 
-end Draw_Piece;
+   end Draw_Piece;
+
+   procedure Get_Position (Column : out Column_Type; Row : out Row_Type) is
+--     State : TP_State := Touch_Panel.Get_All_Touch_Points;
+--      X : Integer;
+--      Y : Integer;
+   begin
+   --     while State'Length > 0 loop
+   --        State := Touch_Panel.Get_All_Touch_Points;
+   --     end loop;
+   --
+   --     loop
+   --        loop
+   --           State := Touch_Panel.Get_All_Touch_Points;
+   --           exit when State'Length > 0;
+   --        end loop;
+   --        X := State (State'First).X;
+   --        Y := State (State'First).Y;
+   --        exit when X in 32..288 and then Y in 0..256;
+   --     end loop;
+   --
+   --     Column := Column_Type (X / 32);
+   --     Row := Row_Type ((Y+32) / 32);
+      null;
+   end Get_Position;
 
 end Board;
