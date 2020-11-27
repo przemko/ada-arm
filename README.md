@@ -44,6 +44,7 @@ gprbuild
 ### Wgranie programu na płytkę montażową
 
 ```bash
+arm-eabi-objcopy -O binary obj/main obj/main.bin
 st-flash write obj/main.bin 0x8000000
 ```
 
